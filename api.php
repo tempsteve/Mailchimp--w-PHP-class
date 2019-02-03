@@ -1,6 +1,7 @@
 <?php
 class Mailchimp
 {
+    // The API key in parameter
     public $apiKey;
 
     public function __construct($apiKey) {
