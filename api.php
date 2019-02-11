@@ -1,16 +1,22 @@
 <?php
+declare(strict_types=1);
+
+namespace Tempsteve\App;
+
 class Mailchimp
 {
     // The API key in parameter
     public $apiKey;
 
-    public function __construct($apiKey) {
+    public function __construct($apiKey)
+    {
         $this->apiKey = $apiKey;
         $server = explode("-", $this->apiKey);
         $this->site = "https://".$server[1].".api.mailchimp.com/3.0/";
     }
 
-    function curl($method, $route, $postData) {
+    public function curl(string $method, string $route, string $postData): string
+    {
         $ch = curl_init($this->site.$route);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         if ($method == "POST") {
@@ -43,7 +49,8 @@ class Mailchimp
         return $result;
     }
 
-    function listCreate() {
+    public function listCreate(): string
+    {
         $data = array(
             "name" => "Your List",
             "contact" => array(
@@ -69,11 +76,12 @@ class Mailchimp
         if (isset($result_decode->{"id"})) {
             return $result_decode->{"id"};
         } else {
-            return false;
+            return "false";
         }
     }
 
-    function listMemberCreate($email, $list_id) {
+    public function listMemberCreate(string $email, string $list_id): bool
+    {
         $data = array(
             'email_address' => $email,
             'status' => 'subscribed',
@@ -89,7 +97,8 @@ class Mailchimp
         }
     }
 
-    function campaignCreate($list_id) {
+    public function campaignCreate(string $list_id): string
+    {
         $result = $this->curl("GET", "lists/".$list_id."/segments", "");
         $result_decode = json_decode($result);
         $segment_id = $result_decode->{"segments"}[0]->{"id"};
@@ -113,11 +122,12 @@ class Mailchimp
         if (isset($result_decode->{"id"})) {
             return $result_decode->{"id"};
         } else {
-            return false;
+            return "false";
         }
     }
 
-    function campaignContentUpdate($campaign_id) {
+    public function campaignContentUpdate(string $campaign_id)
+    {
         $content = "Lorem ipsum dolor sit amet, consectetur adipisicing elit,
             sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
             Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
@@ -131,7 +141,8 @@ class Mailchimp
         $result = $this->curl("PUT", "campaigns/".$campaign_id."/content", $post_json);
     }
 
-    function campaignSend($campaign_id) {
+    public function campaignSend(string $campaign_id): bool
+    {
         $result = $this->curl("GET", "campaigns/".$campaign_id."/send-checklist", "");
         $result_decode = json_decode($result);
 
@@ -144,4 +155,3 @@ class Mailchimp
         }
     }
 }
-?>
