@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 include_once "api.php";
-$Mailchimp = new Tempsteve\App\Mailchimp("fc82298ff1e2dec4ff4beaeabe08010b-us20");
+$Mailchimp = new Tempsteve\App\Mailchimp("Your API Key H");
 
 // Step 1: create a new list
 $list_id = $Mailchimp->listCreate();
